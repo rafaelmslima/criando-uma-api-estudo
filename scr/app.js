@@ -1,7 +1,19 @@
 import express from "express";
+import conectaNaDatabase from "./config/dbConnect.js";
 
 const app = express(); //inicializando o express
 app.use(express.json()) //Permite que você trabalhe com os dados enviados pelo cliente (como em requisições POST, PUT, etc.) de forma simples e direta. (Middleware)
+
+const conexao = await conectaNaDatabase();
+// Metodo que vai verificar e retornar erros
+conexao.on("Error", (erro) =>{
+  console.error("erro de conexao", erro);
+})
+
+// Metodo que vai esperar por algum evento, nesse caso será uma conexao aberta
+conexao.once("open", () => {
+  console.log("Conexao com o banco feita com sucesso")
+})
 
 const livros = [
   {
@@ -56,3 +68,4 @@ app.get("/autores", (req, res) => {
 })
 
 export default app;
+
