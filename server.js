@@ -1,3 +1,4 @@
+import "dotenv/config";
 import app from "./scr/app.js";
 
 const PORT = 3000;

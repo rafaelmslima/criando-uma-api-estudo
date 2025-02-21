@@ -1,5 +1,7 @@
 import express from "express";
 import conectaNaDatabase from "./config/dbConnect.js";
+import livro from "./models/livro.js";
+
 
 const app = express(); //inicializando o express
 app.use(express.json()) //Permite que você trabalhe com os dados enviados pelo cliente (como em requisições POST, PUT, etc.) de forma simples e direta. (Middleware)
@@ -15,31 +17,14 @@ conexao.once("open", () => {
   console.log("Conexao com o banco feita com sucesso")
 })
 
-const livros = [
-  {
-    id: 1,
-    titulo: "O Senhor do Aneis"
-  },
-
-  {
-    id: 2,
-    titulo: "Harry Potter"
-  }
-]
-
-function buscaLivros(id) {
-  return livros.findIndex(livro => {
-    return livro.id === Number(id);
-  })
-}
-
 app.get("/", (req, res) =>{
   res.status(200).send("Curso de Node.js"); 
 });
 
-app.get("/livros", (req, res) =>{
-  res.status(200).json(livros)
-})
+app.get("/livros", async (req, res) =>{
+  const listaLivros = await livro.find({}); // metodo do mongoose que vai se conectar com o banco atlas e vai buscar tudo na colecao livros
+  res.status(200).json(listaLivros);
+});
 
 app.get("/livros/:id", (req,res) => {
   const index = buscaLivros(req.params.id); // Params = Objeto de requisição do Express que contém os parâmetros de rota extraídos do URL. Esses parametros são definidos nas rotas através da sintaxe de dois pontos (:) e servem para capturar partes variáveis da URL. 
